@@ -6,7 +6,13 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 # from talk_show import Client
 
-
+def resource_path(relative_path):
+    """获取资源文件的绝对路径"""
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(os.path.dirname(__file__))
+    return os.path.join(base_path, relative_path)
 
 class DesktopPet(QWidget):
     def __init__(self, parent=None, **kwargs):
@@ -21,7 +27,7 @@ class DesktopPet(QWidget):
         self.petNormalAction()
 
         self.is_at_edge = False
-        self.edge_image = QMovie("pig/edge.gif")
+        self.edge_image = QMovie(resource_path("pig/edge.gif"))
 
 
     # 窗体初始化
@@ -44,7 +50,7 @@ class DesktopPet(QWidget):
     # 托盘化设置初始化
     def initPall(self):
         # 导入准备在托盘化显示上使用的图标
-        icons = os.path.join('pigicon.png')
+        icons = os.path.join('pig.ico')
         # 设置右键显示最小化的菜单项
         # 菜单项退出，点击后调用quit函数
         quit_action = QAction('退出', self, triggered=self.quit)
@@ -69,6 +75,11 @@ class DesktopPet(QWidget):
 
     # 宠物静态gif图加载
     def initPetImage(self):
+        # 添加调试代码
+        pig_dir = resource_path("pig")
+        print(f"Pig directory: {pig_dir}")
+        print(f"Files in pig directory: {os.listdir(pig_dir)}")
+        
         # 对话框定义
         self.talkLabel = QLabel(self)
         # 对话框样式设计
@@ -76,7 +87,7 @@ class DesktopPet(QWidget):
         # 定义显示图片部分
         self.image = QLabel(self)
         # QMovie是一个可以存放动态视频的类，一般是配合QLabel使用的,可以用来存放GIF动态图
-        self.movie = QMovie("pig/pig1.gif")
+        self.movie = QMovie(resource_path("pig/pig1.gif"))
         # 设置标签大小
         self.movie.setScaledSize(QSize(200, 200))
         # 将Qmovie在定义的image中显示
@@ -105,13 +116,14 @@ class DesktopPet(QWidget):
         self.show()
         # https://new.qq.com/rain/a/20211014a002rs00
         # 将宠物正常待机状态的动图放入pet1中
+        pig_dir = resource_path("pig")
         self.pet1 = []
-        for i in os.listdir("pig"):
-            self.pet1.append("pig/" + i)
+        for i in os.listdir(pig_dir):
+            self.pet1.append(resource_path(os.path.join("pig", i)))
         # 将宠物正常待机状态的对话放入pet2中
         self.dialog = []
-        # 读取目录下dialog文件
-        with open("dialog.txt", "r") as f:
+        dialog_path = resource_path("dialog.txt")
+        with open(dialog_path, "r", encoding='utf-8') as f:
             text = f.read()
             # 以\n 即换行符为分隔符，分割放进dialog中
             self.dialog = text.split("\n")
@@ -162,7 +174,7 @@ class DesktopPet(QWidget):
         # 这里可以通过else-if语句往下拓展做更多的交互功能
         elif self.condition == 1:
             # 读取特殊状态图片路径
-            self.movie = QMovie("./click/click.gif")
+            self.movie = QMovie(resource_path("click/click.gif"))
             # 宠物大小
             self.movie.setScaledSize(QSize(200, 200))
             # 将动画添加到label中
@@ -174,7 +186,7 @@ class DesktopPet(QWidget):
             self.talk_condition = 0
         elif self.condition == 2:
             # 把表情设定为固定的动作
-            self.movie = QMovie("./click/notknow.gif")
+            self.movie = QMovie(resource_path("click/notknow.gif"))
             # 宠物大小
             self.movie.setScaledSize(QSize(200, 200))
             # 将动画添加到label中
@@ -329,7 +341,7 @@ class DesktopPet(QWidget):
         self.randomAct()
         # screenGeometry（）函数提供有关可用屏幕几何的信息
         screen_geo = QDesktopWidget().screenGeometry()
-        # 获取窗口坐标系
+        # 获取窗口��标系
         pet_geo = self.geometry()
         width = (screen_geo.width() - pet_geo.width())
         height = (screen_geo.height() - pet_geo.height())
