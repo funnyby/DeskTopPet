@@ -1,13 +1,11 @@
 import os
 import sys
 import random
-import time
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
-from talk_show import Client
-from transformers.dependency_versions_check import pkgs_to_check_at_runtime
-print(pkgs_to_check_at_runtime)
+# from talk_show import Client
+
 
 
 class DesktopPet(QWidget):
@@ -21,6 +19,9 @@ class DesktopPet(QWidget):
         self.initPetImage()
         # 宠物正常待机，实现随机切换动作
         self.petNormalAction()
+
+        self.is_at_edge = False
+        self.edge_image = QMovie("pig/edge.gif")
 
 
     # 窗体初始化
@@ -43,7 +44,7 @@ class DesktopPet(QWidget):
     # 托盘化设置初始化
     def initPall(self):
         # 导入准备在托盘化显示上使用的图标
-        icons = os.path.join('tigerIcon.jpg')
+        icons = os.path.join('pigicon.png')
         # 设置右键显示最小化的菜单项
         # 菜单项退出，点击后调用quit函数
         quit_action = QAction('退出', self, triggered=self.quit)
@@ -75,7 +76,7 @@ class DesktopPet(QWidget):
         # 定义显示图片部分
         self.image = QLabel(self)
         # QMovie是一个可以存放动态视频的类，一般是配合QLabel使用的,可以用来存放GIF动态图
-        self.movie = QMovie("pikaqiu/pikaqiu1.gif")
+        self.movie = QMovie("pig/pig1.gif")
         # 设置标签大小
         self.movie.setScaledSize(QSize(200, 200))
         # 将Qmovie在定义的image中显示
@@ -105,8 +106,8 @@ class DesktopPet(QWidget):
         # https://new.qq.com/rain/a/20211014a002rs00
         # 将宠物正常待机状态的动图放入pet1中
         self.pet1 = []
-        for i in os.listdir("pikaqiu"):
-            self.pet1.append("pikaqiu/" + i)
+        for i in os.listdir("pig"):
+            self.pet1.append("pig/" + i)
         # 将宠物正常待机状态的对话放入pet2中
         self.dialog = []
         # 读取目录下dialog文件
@@ -173,7 +174,7 @@ class DesktopPet(QWidget):
             self.talk_condition = 0
         elif self.condition == 2:
             # 把表情设定为固定的动作
-            self.movie = QMovie("./click/20220614223056.gif")
+            self.movie = QMovie("./click/notknow.gif")
             # 宠物大小
             self.movie.setScaledSize(QSize(200, 200))
             # 将动画添加到label中
@@ -281,7 +282,7 @@ class DesktopPet(QWidget):
         menu = QMenu(self)
         # 定义菜单项
         hide = menu.addAction("隐藏")
-        question_answer = menu.addAction("故事大会")
+        # question_answer = menu.addAction("故事大会")
         if self.rest_open == 1:
             rest_anhour = menu.addAction("打开休息提醒")
         elif self.rest_open == 2:
@@ -298,10 +299,10 @@ class DesktopPet(QWidget):
         if action == hide:
             # 通过设置透明度方式隐藏宠物
             self.setWindowOpacity(0)
-        # 点击事件为故事大会
-        if action == question_answer:
-            self.client = Client()
-            self.client.show()
+        #  点击事件为故事大会
+        # if action == question_answer:
+        #     self.client = Client()
+        #     self.client.show()
 
         # 打开休息提醒
         if action == rest_anhour:
